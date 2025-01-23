@@ -7,6 +7,7 @@ use App\Models\Classes;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Log;
 
 class AttendanceController extends Controller
 {
@@ -14,22 +15,21 @@ class AttendanceController extends Controller
     {
         // Validate the uploaded image
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'required',
         ]);
 
         // Send the image to Flask API
-        $image = $request->file('image');
-        $response = Http::attach(
-            'image',
-            file_get_contents($image->getRealPath()),
-            $image->getClientOriginalName()
-        )->post('http://127.0.0.1:5000/verify');
+        $imageBase64 = $request->input('image');
+        // $imageBase64 = 'data:image/jpeg;base64,' . $imageBase64;
+        Log::info('Response from Python API', ['response' => $imageBase64]);
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post('http://127.0.0.1:5000/verify', [
+            'image' => $imageBase64,
+        ]);
 
-        // if($response->successfull()){
-        //     $result = $response->json();
-        // }
+        // Log::info('Response from Python API', ['response' => $imageBase64]);
 
-        
         $result = $response->json();
 
         if ($result['status'] === 'success') {
