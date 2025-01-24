@@ -20,15 +20,11 @@ class AttendanceController extends Controller
 
         // Send the image to Flask API
         $imageBase64 = $request->input('image');
-        // $imageBase64 = 'data:image/jpeg;base64,' . $imageBase64;
-        Log::info('Response from Python API', ['response' => $imageBase64]);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post('http://127.0.0.1:5000/verify', [
             'image' => $imageBase64,
         ]);
-
-        // Log::info('Response from Python API', ['response' => $imageBase64]);
 
         $result = $response->json();
 
@@ -53,5 +49,32 @@ class AttendanceController extends Controller
         // Example response
         return "Attendance marked for $studentName at $currentTime.";
     }
-}
 
+    public function enrollFace(Request $request)
+    {
+        // Validate the uploaded image
+        $request->validate([
+            'image' => 'required',
+            'name' => 'required',
+        ]);
+
+        // Send the image to Flask API
+        $imageBase64 = $request->input('image');
+        $name = $request->input('name');
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post('http://127.0.0.1:5000/enroll', [
+            'image' => $imageBase64,
+            'name' => $name,
+        ]);
+
+        $result = $response->json();
+
+        if ($result['status'] === 'success') {
+            return response()->json(['status' => 'success', 'message' => $result['message']]);
+        }
+
+        return response()->json(['status' => 'error', 'message' => $result['message']]);
+    }
+
+}

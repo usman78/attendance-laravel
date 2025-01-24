@@ -7,9 +7,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/verify-face', [AttendanceController::class, 'verifyFace']);
-
 Route::get('/attendance', function () {
     return view('attendance');
-});
+})->name('attendance');
 
+Route::post('/verify-face', [AttendanceController::class, 'verifyFace']);
+
+Route::get('/enroll', function () {
+    return view('enroll');
+})->name('enroll');
+
+Route::post('/enroll-face', [AttendanceController::class, 'enrollFace']);
