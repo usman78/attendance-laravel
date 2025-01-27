@@ -18,3 +18,7 @@ Route::get('/enroll', function () {
 })->name('enroll');
 
 Route::post('/enroll-face', [AttendanceController::class, 'enrollFace']);
+
+
+
+Route::get('/debug-student', [AttendanceController::class, 'debugStudent']);

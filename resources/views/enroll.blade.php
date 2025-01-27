@@ -2,10 +2,24 @@
 @section('content')
     <div class="container mt-5">
         <h2 class="text-center">New Attendance Enrollment</h2>
-
-        <input type="text" id="student_id" class="form-control mt-3" placeholder="Student Roll Number">
-
-        <input type="text" id="student_name" class="form-control mt-3" placeholder="Student Name">
+        <div class="row justify-content-center">
+            <div class="col-md-6"> 
+                <div class="card">
+                    <div class="card-body">
+                        {{-- <form> --}}
+                            <div class="form-group">
+                                <label for="student_roll">Student Roll Number:</label>
+                                <input type="number" class="form-control" id="student_roll" placeholder="Student Roll Number" required>
+                            </div>
+                            {{-- <div class="form-group">
+                                <label for="input2">Input 2:</label>
+                                <input type="text" class="form-control" id="input2" placeholder="Enter text">
+                            </div> --}}
+                        {{-- </form> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Webcam Section -->
         <div id="webcam-container" class="text-center">
@@ -20,13 +34,17 @@
         <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
 
         <!-- Response Message -->
-        <div id="response-message" class="mt-3"></div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div id="response-message" class="mt-3"></div>
+            </div>
+        </div>
     </div>
 
     <script>
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('canvas');
-        const student = document.getElementById('student_name');
+        const student = document.getElementById('student_roll');
         const captureButton = document.getElementById('capture-button');
         const responseMessage = document.getElementById('response-message');
 
@@ -40,6 +58,12 @@
 
         // Capture Frame and Send to API
         captureButton.addEventListener('click', async () => {
+            if (!student.value) {
+                responseMessage.innerHTML = `
+                    <div class="alert alert-danger">Please enter the roll number to enroll.</div>
+                `;
+                return;
+            }
             const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -54,7 +78,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ image: base64Image, name: student.value })
+                    body: JSON.stringify({ image: base64Image, roll_no: student.value })
                 });
 
                 const result = await response.json();

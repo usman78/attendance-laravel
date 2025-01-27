@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
 {
-    public function student(){
-        return $this->belongsTo(Student::class);
-    }
+    protected $fillable = ['student_id', 'class_id', 'timestamp'];
 
-    public function class(){
-        return $this->belongsTo(Classes::class);
-    }
+    protected $table = 'attendance';
+    // public function student(){
+    //     return $this->belongsTo(Student::class);
+    // }
+
+    // public function class(){
+    //     return $this->belongsTo(Classes::class);
+    // }
 }

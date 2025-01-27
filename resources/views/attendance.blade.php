@@ -17,7 +17,11 @@
         <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
 
         <!-- Response Message -->
-        <div id="response-message" class="mt-3"></div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div id="response-message" class="mt-3"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -53,7 +57,7 @@
                     body: JSON.stringify({ image: base64Image })
                 });
 
-                const result = await response.json();
+                const result = await response.json(); 
                 responseMessage.innerHTML = `
                     <div class="alert ${result.status === 'success' ? 'alert-success' : 'alert-danger'}">
                         ${result.message}
