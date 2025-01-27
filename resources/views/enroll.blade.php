@@ -26,7 +26,7 @@
             <video id="webcam" autoplay playsinline width="640" height="480"></video>
             <div class="btns">
                 <a href="{{ route('attendance')}}"><button class="btn btn-primary mt-3">Mark Attendence</button></a>   
-                <button id="capture-button" class="btn btn-success mt-3">Enroll The Face</button>
+                <button id="capture-button" class="btn btn-success mt-3"></button>
             </div>
         </div>
 
@@ -48,6 +48,15 @@
         const captureButton = document.getElementById('capture-button');
         const responseMessage = document.getElementById('response-message');
 
+        captureButton.innerHTML = `
+            <span id="button-text">Enroll The Face</span>
+            <div id="loading-spinner" class="spinner-border spinner-border-sm text-light d-none" role="status"></div>
+        `;
+
+        // Get references to the spinner and button text
+        const buttonText = document.getElementById('button-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
         // Access Webcam
         async function setupWebcam() {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -64,6 +73,11 @@
                 `;
                 return;
             }
+
+            buttonText.style.display = 'none'; // Hide button text
+            loadingSpinner.classList.remove('d-none'); // Show spinner
+            captureButton.disabled = true; // Disable the button
+
             const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -91,6 +105,10 @@
                 responseMessage.innerHTML = `
                     <div class="alert alert-danger">An error occurred. Please try again.</div>
                 `;
+            } finally {
+                buttonText.style.display = 'block'; // Show button text
+                loadingSpinner.classList.add('d-none'); // Hide spinner
+                captureButton.disabled = false; // Enable the button
             }
         });
     </script>
