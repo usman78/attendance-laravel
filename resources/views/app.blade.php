@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="main-nav">
-        <h2>Aziz Fatima Medical & Dental College</h2>
+        <h2>AFMDC Student Attendance</h2>
     </div>
     @yield('content')
 </body>

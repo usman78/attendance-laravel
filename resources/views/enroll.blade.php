@@ -1,15 +1,15 @@
 @extends('app')
 @section('content')
     <div class="container mt-5">
-        <h2 class="text-center">New Attendance Enrollment</h2>
-        <div class="row justify-content-center">
+        <h2 class="text-center">New Enrollment</h2>
+        <div class="row justify-content-center" style="margin-bottom: 20px;">
             <div class="col-md-6"> 
                 <div class="card">
                     <div class="card-body">
                         {{-- <form> --}}
                             <div class="form-group">
-                                <label for="student_roll">Student Roll Number:</label>
-                                <input type="number" class="form-control" id="student_roll" placeholder="Student Roll Number" required>
+                                {{-- <label for="student_roll">Student Roll Number:</label> --}}
+                                <input type="number" class="form-control" id="student_roll" placeholder="Enter Your Roll Number" required>
                             </div>
                             {{-- <div class="form-group">
                                 <label for="input2">Input 2:</label>
@@ -23,7 +23,7 @@
 
         <!-- Webcam Section -->
         <div id="webcam-container" class="text-center">
-            <video id="webcam" autoplay playsinline width="640" height="480"></video>
+            <video id="webcam" autoplay playsinline></video>
             <div class="btns">
                 <a href="{{ route('attendance')}}"><button class="btn btn-primary mt-3">Mark Attendence</button></a>   
                 <button id="capture-button" class="btn btn-success mt-3"></button>

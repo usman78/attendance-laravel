@@ -2,11 +2,11 @@
 @section('content')
     
     <div class="container mt-5">
-        <h2 class="text-center">Student Attendance</h2>
+        {{-- <h2 class="text-center">Student Attendance</h2> --}}
 
         <!-- Webcam Section -->
         <div id="webcam-container" class="text-center">
-            <video id="webcam" autoplay playsinline width="640" height="480"></video>
+            <video id="webcam" autoplay playsinline></video>
             <div class="btns">
                 <a href="{{ route('enroll') }}"><button class="btn btn-primary mt-3">Enroll The Face</button></a>
                 <button id="capture-button" class="btn btn-success mt-3">Mark Attendance</button>

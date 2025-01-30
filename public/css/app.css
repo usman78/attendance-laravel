@@ -12,16 +12,45 @@
     border-color: #8a5796;
     color: #fff;
     text-align: center;
+    padding: 0 15px;
 }
 
 #main-nav h2 {
     margin-bottom: 5px;
 }
 
-div#webcam-container {
-    margin-top: 20px;
+#webcam-container {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+#webcam {
+    max-width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 
 .container.mt-5 {
     margin-top: 1rem !important;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.login-button {
+    display: flex;
+    justify-content: center;
+}   
+
+.user-style {
+    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+    #webcam-container {
+        max-width: 100%;
+    }
 }
