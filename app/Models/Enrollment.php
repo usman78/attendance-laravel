@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class Enrollment extends Model
 {
-    protected $fillable = ['roll_no'];
+    protected $fillable = ['roll_no', 'enroll'];
 
-    protected $table = 'online_attendence';
-    protected $primaryKey  = 'online_id';
+    protected $table = 'online_enrollment';
+    protected $primaryKey  = 'roll_no';
+
     public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'int';

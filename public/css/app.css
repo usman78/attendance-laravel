@@ -15,8 +15,8 @@
     padding: 0 15px;
 }
 
-#main-nav h2 {
-    margin-bottom: 5px;
+#main-nav h5 {
+    margin-bottom: 0.15rem;
 }
 
 #webcam-container {
@@ -36,9 +36,9 @@
     margin-top: 1rem !important;
 }
 
-.form-group {
+/* .form-group {
     margin-bottom: 20px;
-}
+} */
 
 .login-button {
     display: flex;

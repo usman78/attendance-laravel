@@ -1,7 +1,7 @@
 @extends('app')
 @section('content')
     <div class="container mt-5">
-        <h2 class="text-center">New Enrollment</h2>
+        <h6 class="text-center">New Enrollment</h6>
         <div class="row justify-content-center" style="margin-bottom: 20px;">
             <div class="col-md-6"> 
                 <div class="card">
@@ -31,7 +31,7 @@
         </div>
 
         <!-- Hidden Canvas for Image Capture -->
-        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+        <canvas id="canvas" style="display: none;"></canvas>
 
         <!-- Response Message -->
         <div class="row justify-content-center">
@@ -79,6 +79,8 @@
             captureButton.disabled = true; // Disable the button
 
             const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             const imageData = canvas.toDataURL('image/jpeg');

@@ -8,13 +8,13 @@
         <div id="webcam-container" class="text-center">
             <video id="webcam" autoplay playsinline></video>
             <div class="btns">
-                <a href="{{ route('enroll') }}"><button class="btn btn-primary mt-3">Enroll The Face</button></a>
-                <button id="capture-button" class="btn btn-success mt-3">Mark Attendance</button>
+                <a href="{{ route('dashboard') }}"><button class="btn btn-primary mt-3">Back</button></a>
+                {{-- <button id="capture-button" class="btn btn-success mt-3">Mark Attendance</button> --}}
             </div>
         </div>
 
         <!-- Hidden Canvas for Image Capture -->
-        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+        <canvas id="canvas" style="display: none;"></canvas>
 
         <!-- Response Message -->
         <div class="row justify-content-center">
@@ -27,39 +27,37 @@
     <script>
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('canvas');
-        const captureButton = document.getElementById('capture-button');
         const responseMessage = document.getElementById('response-message');
 
-        captureButton.innerHTML = `
-            <span id="button-text">Mark Attendance</span>
-            <div id="loading-spinner" class="spinner-border spinner-border-sm text-light d-none" role="status"></div>
-        `;
-
-        // Get references to the spinner and button text
-        const buttonText = document.getElementById('button-text');
-        const loadingSpinner = document.getElementById('loading-spinner');
+        let isProcessing = false; // To prevent multiple API calls
+        let isAttendanceMarked = false; // To prevent duplicate marking
 
         // Access Webcam
         async function setupWebcam() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (error) {
+                responseMessage.innerHTML = `<div class="alert alert-danger">Webcam access denied. Please enable camera permissions.</div>`;
+            }
         }
 
         setupWebcam();
 
-        // Capture Frame and Send to API
-        captureButton.addEventListener('click', async () => {
+        // Function to capture frame and send to API
+        async function captureAndVerify() {
+            if (isProcessing || isAttendanceMarked) return; // Prevent multiple calls
 
-            buttonText.style.display = 'none'; // Hide button text
-            loadingSpinner.classList.remove('d-none'); // Show spinner
-            captureButton.disabled = true; // Disable the button
-
+            isProcessing = true;
             const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             const imageData = canvas.toDataURL('image/jpeg');
             const base64Image = imageData.split(',')[1]; // Remove metadata
-            
+
+            console.log('Sending image to API...');
 
             try {
                 const response = await fetch('/verify-face', {
@@ -71,21 +69,32 @@
                     body: JSON.stringify({ image: base64Image })
                 });
 
-                const result = await response.json(); 
-                responseMessage.innerHTML = `
-                    <div class="alert ${result.status === 'success' ? 'alert-success' : 'alert-danger'}">
-                        ${result.message}
-                    </div>
-                `;
+                const result = await response.json();
+                console.log("Server response:", result);
+                
+                if (result.status === 'success') {
+                    isAttendanceMarked = true; // Stop further attempts
+                    responseMessage.innerHTML = `
+                        <div class="alert alert-success">${result.message}</div>
+                    `;
+                    setTimeout(() => {
+                    isAttendanceMarked = false; // Allow next attempt
+                    responseMessage.innerHTML = ''; 
+                    }, 2000);
+                } else {
+                    responseMessage.innerHTML = `
+                        <div class="alert alert-warning">${result.message}</div>
+                    `;
+                }
             } catch (error) {
-                responseMessage.innerHTML = `
-                    <div class="alert alert-danger">An error occurred. Please try again.</div>
-                `;
-            } finally {
-                buttonText.style.display = 'block'; // Show button text
-                loadingSpinner.classList.add('d-none'); // Hide spinner
-                captureButton.disabled = false; // Enable the button
+                console.error('Error:', error);
+                responseMessage.innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
             }
-        });
+
+            isProcessing = false; // Allow next attempt
+        }
+
+        // Start automatic face detection every 2 seconds
+        setInterval(captureAndVerify, 2000);
     </script>
 @endsection

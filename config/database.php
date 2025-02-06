@@ -114,12 +114,12 @@ return [
 
         'oracle' => [
             'driver' => 'oracle',
-            'tns' => '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.23)(PORT = 1521)) (CONNECT_DATA =(SERVICE_NAME = orcl)))',
-            'host' => env('DB_HOST', '192.168.1.23'),
+            'tns' => '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.11)(PORT = 1521)) (CONNECT_DATA =(SERVICE_NAME = orcl)))',
+            'host' => env('DB_HOST', '192.168.1.11'),
             'port' => env('DB_PORT', '1521'),
-            'database' => env('DB_DATABASE', '19c_db'),
-            'username' => env('DB_USERNAME', 'usman'),
-            'password' => env('DB_PASSWORD', 'usman'),
+            'database' => env('DB_DATABASE', 'a'),
+            'username' => env('DB_USERNAME', 'mis'),
+            'password' => env('DB_PASSWORD', 'mis'),
             'charset' => env('DB_CHARSET', 'AL32UTF8'),
             'prefix' => env('DB_PREFIX', ''),
             'prefix_schema' => env('DB_SCHEMA_PREFIX', ''),

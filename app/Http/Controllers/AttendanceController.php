@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enrollment;
 use App\Models\Student;
 use App\Models\Classes;
 use App\Models\Attendance;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
@@ -50,10 +52,16 @@ class AttendanceController extends Controller
         //     return "No class is currently in session.";
         // }
 
+        $existingAttendance = Attendance::where('roll_no', $roll)
+            ->whereDate('attnd_date_time', $currentTime)
+            ->first();
+
+        if ($existingAttendance) {
+            return "Attendance already marked for today.";
+        }
+
         Attendance::create([
-            'student_id' => $roll,
-            'class_id' => 3,
-            'timestamp' => $currentTime,
+            'roll_no' => $roll,
         ]);
         
 
@@ -79,12 +87,20 @@ class AttendanceController extends Controller
         $roll_no = $request->input('roll_no');
 
         // Verify if the student exists
-        $roll_no = $this->verifyStudent($roll_no);
+        // $roll_no = $this->verifyStudent($roll_no);
         // Log::debug('The Roll number is: ' . $roll_no); 
 
-        if($roll_no === null) {
-            return response()->json(['status' => 'error', 'message' => 'The roll number you entered is not in our record.']);
+        $enroll = Enrollment::where('roll_no', $roll_no)->first();
+
+        Log::debug('The Roll number is of the student is: ' . $enroll);
+
+        if($enroll) {
+            return response()->json(['status' => 'error', 'message' => 'The roll number is already enrolled.']);
         }
+
+        // if($roll_no === null) {
+        //     return response()->json(['status' => 'error', 'message' => 'The roll number you entered is not in our record.']);
+        // }
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -96,6 +112,10 @@ class AttendanceController extends Controller
         $result = $response->json();
 
         if ($result['status'] === 'success') {
+            Enrollment::create([
+                'roll_no' => $roll_no,
+                'enroll' => 1,
+            ]);
             return response()->json(['status' => 'success', 'message' => $result['message']]);
         }
 
@@ -119,21 +139,29 @@ class AttendanceController extends Controller
 
     public function debugStudent()
     {
-        // Fetch a student record for debugging
-        // $student = Student::first();
-        $student = Student::where('id', 1171)->first();
+        // DB::insert("INSERT INTO ADMINS (ID, NAME, EMAIL, PASSWORD, CREATED_AT, UPDATED_AT) 
+        //             VALUES (:id, :name, :email, :password, :created_at, :updated_at)", [
+        //     'id' => 1, 
+        //     'name' => 'Test Admin', 
+        //     'email' => 'admin@afmdc.com', 
+        //     'password' => bcrypt('afmdc321'), // Hash password
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+    
+        $admin = Admin::first();
 
 
 
-        if ($student) {
+        if ($admin) {
             return response()->json([
                 'status' => 'success',
-                'student roll' => $student->id,
+                'Admin Credentials: ' => $admin,
             ]);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'No student found.',
+                'message' => 'No admin found.',
             ]);
         }
     }

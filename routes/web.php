@@ -16,13 +16,15 @@ Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->middleware
 
 Route::get('admin/logout', [AdminController::class, 'logout'])->name('logout');
 
+Route::get('/enroll', function () {
+    return view('enroll');
+})->name('enroll');
+Route::get('/attendance', function () {
+    return view('attendance');
+})->name('attendance');
+
 Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/enroll', function () {
-        return view('enroll');
-    })->name('enroll');
-    Route::get('/attendance', function () {
-        return view('attendance');
-    })->name('attendance');
+
 
 });
 
@@ -30,4 +32,4 @@ Route::post('/verify-face', [AttendanceController::class, 'verifyFace']);
 
 Route::post('/enroll-face', [AttendanceController::class, 'enrollFace']);
 
-// Route::get('/debug-student', [AttendanceController::class, 'debugStudent']);
+Route::get('/debug-student', [AttendanceController::class, 'debugStudent']);
